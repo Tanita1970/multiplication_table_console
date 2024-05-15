@@ -7,8 +7,8 @@ class UserTask {
 
   int userAnswer = 0;
   bool isCorrect = false;
-  int countCorrectAnswer = 0;
-  int countWrongAnswer = 0;
+  // int countCorrectAnswer = 0;
+  // int countWrongAnswer = 0;
 
   UserTask(this.user, this.task);
 
@@ -19,27 +19,22 @@ class UserTask {
   void checkAnswer() {
     if (userAnswer == task.result) {
       isCorrect = true;
-      countCorrectAnswer++;
+      // countCorrectAnswer++;
     } else {
       isCorrect = false;
-      countWrongAnswer++;
+      // countWrongAnswer++;
     }
   }
 
   void reset() {
     userAnswer = 0;
     isCorrect = false;
-    countCorrectAnswer = 0;
-    countWrongAnswer = 0;
+    // countCorrectAnswer = 0;
+    // countWrongAnswer = 0;
   }
 
   @override
   String toString() {
-    return 'UserTask: user: $user,\n'
-        'task: $task,\n'
-        'userAnswer: $userAnswer,\n'
-        'isCorrect: $isCorrect,\n'
-        'countCorrectAnswer: $countCorrectAnswer,\n'
-        'countWrongAnswer: $countWrongAnswer';
+    return '\n$task. Ответ пользователя: $userAnswer ($isCorrect)';
   }
 }

@@ -10,6 +10,6 @@ class Task {
   });
   @override
   String toString() {
-    return 'Task{numOne: $numOne, numTwo: $numTwo, result: $result}\n';
+    return '$numOne * $numTwo = $result';
   }
 }

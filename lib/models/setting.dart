@@ -13,7 +13,7 @@ class Setting {
   int numTwoTo = 9;
   int timeMinute = 0;
   int timeSecond = 30;
-  int taskCount = 10;
+  int taskCount = 12;
   Mode mode = Mode.taskCount;
 
   // Setting() {
@@ -96,10 +96,7 @@ class Setting {
     if (value == Mode.taskCount) {
       timeMinute = 0;
       timeSecond = 0;
-      taskCount = 10;
     } else {
-      timeMinute = 0;
-      timeSecond = 30;
       taskCount = 0;
     }
     mode = value;

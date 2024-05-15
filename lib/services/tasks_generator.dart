@@ -1,37 +1,109 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:async';
+
+import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/task.dart';
 import 'package:multiplication_table_console/models/user.dart';
+import 'package:multiplication_table_console/models/user_task.dart';
 
 class TasksGenerator {
-  final User user;
-  List<Task> tasks = [];
+  TasksGenerator(this.user);
 
-  TasksGenerator(this.user) {
-    // tasks = [];
-    int num_1 = user.setting.numOneFrom;    
-    int countNumOne = user.setting.numOneTo - user.setting.numOneFrom + 1;
-    int countNumTwo = user.setting.numTwoTo - user.setting.numTwoFrom + 1;
-    for (int i = 0; i < countNumOne; i++) {
-      int num_2 = user.setting.numTwoFrom;
-      for (int j = 0; j < countNumTwo; j++) {
-        tasks.add(
-          Task(
-            numOne: num_1,
-            numTwo: num_2,
-            result: num_1 * num_2,
-          ),
-        );
-        num_2++;
+  final User user;
+
+  List<Task> tasks = [];
+  List<UserTask> userTasks = [];
+
+  int correctAnswersCount = 0;
+  // Надо убрать, так как оказалось, что нигде не используется
+  int wrongAnswersCount = 0;
+  // Надо убрать, так как оказалось, что нигде не используется
+
+  List<Task> solvedTasks = [];
+  List<Task> unsolvedTasks = [];
+
+  /// Метод generateTasks создает список всех возможных задач
+  /// на основе настроек пользователя для первого и второго чисел.
+  List<Task> generateTasks() {
+    List<Task> tasks = [];
+    for (int i = user.setting.numOneFrom; i <= user.setting.numOneTo; i++) {
+      for (int j = user.setting.numTwoFrom; j <= user.setting.numTwoTo; j++) {
+        tasks.add(Task(numOne: i, numTwo: j, result: i * j));
       }
-      num_1++;
+    }
+    // print(' Список tasks: ${tasks.toString()}');
+    return tasks;
+  }
+
+  /// Получает произвольную задачу
+  /// из списка не решенных задач
+  Task getRandomTask() {
+    print('***************************************');
+
+    if (unsolvedTasks.isEmpty) {
+      unsolvedTasks.addAll(tasks);
+    }
+
+    Random random = Random();
+    int index = random.nextInt(unsolvedTasks.length);
+    Task task = unsolvedTasks[index];
+    return task;
+  }
+
+  void training(int count) {
+    print('khkjhkjhkjhkjhkjhkjhkjkjkjh $tasks');
+    for (var i = 0; i < count; i++) {
+      Task task = getRandomTask();
+      print('${task.numOne} * ${task.numTwo} =?');
+
+      int answer = int.parse(stdin.readLineSync() ?? '');
+      UserTask userTask = UserTask(user, task);
+      userTask.setAnswer(answer);
+      userTask.checkAnswer();
+
+      if (userTask.isCorrect) {
+        correctAnswersCount++; // Проверить, вроде не нужно!
+        solvedTasks.add(task);
+        unsolvedTasks.remove(task);
+      } else {
+        wrongAnswersCount++; // Проверить, вроде не нужно!
+      }
+      userTasks.add(userTask);
     }
   }
-}
-  // if (user.setting.mode == Mode.timed) {
-  // int totalSeconds = user.setting.timeMinute * 60 + user.setting.timeSecond;
-  // int taskCount = totalSeconds ~/ 5; // Каждый вопрос занимает 5 секунд
-  // } else {
-  //   for (int i = 0; i < taskCount; i++) {
-  //     tasks.add(Task(numOne: Random().nextInt(numOne) + 1, numTwo: Random().nextInt(numTwo) + 1));
-  //   }
-  // }
 
+  void startTaskByTime(List<Task> tasks) {
+    Timer timer;
+    int timeLimit = user.setting.timeMinute * 60 + user.setting.timeSecond;
+    int elapsedTime = 0;
+    
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      elapsedTime++;
+      if (elapsedTime >= timeLimit) {
+        t.cancel();
+        print('Время вышло!');
+        return;
+      }
+    });
+    training(tasks.length);
+  }
+
+  void startTaskByCount(List<Task> tasks) {
+    training(user.setting.taskCount);
+  }
+
+  void startTask() {
+    tasks = generateTasks();
+    if (user.setting.mode == Mode.timed) {
+      startTaskByTime(tasks);
+    } else {
+      startTaskByCount(tasks);
+    }
+    print(userTasks);
+    print('\nВсего правильных ответов: $correctAnswersCount.\n'
+        'Всего не правильных ответов: $wrongAnswersCount');
+    print('Правильно решенные: $solvedTasks');
+    print('Не решенные: $unsolvedTasks');
+  }
+}
