@@ -12,7 +12,7 @@ class User {
 
   User({required this.name, isPremium, setting, email, password});  
 
-  void registerUser() {
+  void register() {
     print('Регистрация...');
 
     /// Ввод имени пользователя
@@ -104,6 +104,19 @@ class User {
     // Простая проверка пароля: не менее 8 символов, включая как минимум одну цифру и одну букву
     RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$');
     return passwordRegex.hasMatch(password);
+  }
+
+  bool login(String email, String password) {
+    // Сверка адреса электронной почты и пароля 
+    // с учетными данными зарегистрированного пользователя
+    for (User user in registeredUsers) {
+      if (user.email == email && user.password == password) {
+        print('Вы успешно вошли в систему!');
+        return true;
+      }
+    }
+    print('Неверный email или пароль!');
+    return false;
   }
 
   @override
