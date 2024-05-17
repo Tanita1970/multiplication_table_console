@@ -11,8 +11,8 @@ void main() {
   var userTanya = User(name: 'Таня');
   userTanya.setting.setNumOneFromTo(valueFrom: 2, valueTo: 5);
   userTanya.setting.setNumTwoFromTo(valueFrom: 4, valueTo: 6);
-  // userTanya.setting.setMode(value: Mode.timed);
-  userTanya.setting.setMode(value: Mode.taskCount);
+  userTanya.setting.setMode(value: Mode.timed);
+  // userTanya.setting.setMode(value: Mode.taskCount);
   print('Создан пользователь ${userTanya.toString()}');
   TasksGenerator(userTanya).startTask();
 }
