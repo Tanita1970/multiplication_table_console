@@ -85,8 +85,8 @@ class TasksGenerator {
 
   void startTaskByTime(List<Task> tasks) {
     // training(tasks.length);
-
-    Timer(Duration(seconds: 40), () {
+    int timeTraining = user.setting.timeMinute * 60 + user.setting.timeSecond;
+    Timer(Duration(seconds: timeTraining), () {
       print('\n\nИстекло время для ввода чисел.');
       print(userTasks);
       print('\nВсего правильных ответов: $correctAnswersCount.\n'
@@ -103,10 +103,11 @@ class TasksGenerator {
 
     if (unsolvedTasks.isEmpty) unsolvedTasks.addAll(tasks);
 
-    print('\n\nТренировка началась!!!');
+    print('\n\nТренировка ПО ВРЕМЕНИ началась!!!');
+    print('Время: $timeTraining');
     print('\n*** Пример №1:');
     int counterTasks = 0;
-    int index = 0;    
+    int index = 0;
     print('${tasks[index].numOne} * ${tasks[index].numTwo} = ?');
 
     stdin.transform(utf8.decoder).listen((String data) {
@@ -141,6 +142,55 @@ class TasksGenerator {
 
   void startTaskByCount(List<Task> tasks) {
     // training(user.setting.taskCount);
+    print('Список всех примеров: $tasks');
+    tasks.shuffle();
+    print('Перемешанные $tasks');
+
+    if (unsolvedTasks.isEmpty) unsolvedTasks.addAll(tasks);
+
+    print('\n\nТренировка ПО КОЛИЧЕСТВУ началась!!!');
+    print(
+        '${user.name}, тебе надо решить ${user.setting.taskCount} примеров!\n');
+    int counterTasks = 1;
+    int userSettingTaskCount = user.setting.taskCount;
+    for (var index = 0; index < userSettingTaskCount; index++) {
+      print('\n*** Пример №$counterTasks:');
+
+      // int index = 0;
+      print('${tasks[index].numOne} * ${tasks[index].numTwo} = ?');
+
+      int answer = int.parse(stdin.readLineSync() ?? '');
+      UserTask userTask = UserTask(user, tasks[index]);
+      userTask.setAnswer(answer);
+      userTask.checkAnswer();
+      userTasks.add(userTask);
+      if (userTask.isCorrect) {
+        correctAnswersCount++;
+        solvedTasks.add(tasks[index]);
+        unsolvedTasks.remove(tasks[index]);
+      } else {
+        var savedTask = tasks[index];
+        tasks.removeAt(index);
+        int newIndex = (index + 2 < tasks.length) ? index + 2 : tasks.length;
+        tasks.insert(newIndex, savedTask);
+        index--;
+        userSettingTaskCount--;
+        wrongAnswersCount++;
+      }
+
+      if (index >= tasks.length) {
+        tasks.shuffle();
+        index = 0;
+      }
+
+      counterTasks++;
+    }
+    print(userTasks);
+    print('\nВсего правильных ответов: $correctAnswersCount.\n'
+        'Всего не правильных ответов: $wrongAnswersCount');
+    print('Правильно решенные: $solvedTasks');
+    print('Не решенные: $unsolvedTasks');
+    print('tasks: $tasks');
   }
 
   void startTask() {
@@ -150,11 +200,5 @@ class TasksGenerator {
     } else {
       startTaskByCount(tasks);
     }
-    //   print(userTasks);
-    //   print('\nВсего правильных ответов: $correctAnswersCount.\n'
-    //       'Всего не правильных ответов: $wrongAnswersCount');
-    //   print('Правильно решенные: $solvedTasks');
-    //   print('Не решенные: $unsolvedTasks');
-    // }
   }
 }
