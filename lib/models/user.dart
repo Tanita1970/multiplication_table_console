@@ -1,16 +1,22 @@
 import 'dart:io';
 
 import 'package:multiplication_table_console/models/setting.dart';
-import 'package:multiplication_table_console/data/list_of_registered_users.dart';
+import 'package:multiplication_table_console/data/registered_users.dart';
 
 class User {
   String name;
-  bool isPremium = false;
-  Setting setting = Setting();
-  String email = 'Нет';
-  String password = 'Нет';
+  bool isPremium;
+  Setting setting;
+  String email;
+  String password;
 
-  User({required this.name, isPremium, setting, email, password});  
+  User({
+    required this.name,
+    this.isPremium = false,
+    required this.setting,
+    this.email = 'Нет',
+    this.password = 'Нет',
+  });
 
   void register() {
     print('Регистрация...');
@@ -70,13 +76,14 @@ class User {
       attemptForPassword++;
     } while (password != confirmPassword && attemptForPassword <= 3);
 
-    /// Проверка на существование пользователя в базе данных    
+    /// Проверка на существование пользователя в базе данных
     for (User user in registeredUsers) {
       if (user.name == name && user.email == email) {
         print('Вы уже зарегистрированы!');
         return;
       }
     }
+
     /// Создание нового пользователя в базе данных
     User newUser = User(
         name: name,
@@ -107,7 +114,7 @@ class User {
   }
 
   bool login(String email, String password) {
-    // Сверка адреса электронной почты и пароля 
+    // Сверка адреса электронной почты и пароля
     // с учетными данными зарегистрированного пользователя
     for (User user in registeredUsers) {
       if (user.email == email && user.password == password) {
@@ -121,10 +128,10 @@ class User {
 
   @override
   String toString() {
-    return '\n*** Информация о пользователе ***\nИмя: $name,\n'
+    return '\n\n*** ПОЛЬЗОВАТЕЛЬ ${name.toUpperCase()} ***\n'
         'isPremium: $isPremium,\n'
         'email: $email,\n'
         'password: $password,\n\n'
-        '*** setting ***\n$setting\n';
+        'НАСТРОЙКИ:\n$setting';
   }
 }

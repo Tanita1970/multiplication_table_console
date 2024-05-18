@@ -6,27 +6,40 @@ enum Mode {
   taskCount,
 }
 
-class Setting {
-  int numOneFrom = 1;
-  int numOneTo = 9;
-  int numTwoFrom = 1;
-  int numTwoTo = 9;
-  int timeMinute = 0;
-  int timeSecond = 30;
-  int taskCount = 12;
-  Mode mode = Mode.taskCount;
+extension ModeExtension on Mode {
+  String get displayName {
+    switch (this) {
+      case Mode.timed:
+        return 'По времени';
+      case Mode.taskCount:
+        return 'По количеству примеров';
+      default:
+        return '';
+    }
+  }
+}
 
-  // Setting() {
-  //   if (mode == Mode.taskCount) {
-  //     timeMinute = 0;
-  //     timeSecond = 0;
-  //     taskCount = 10;
-  //   } else {
-  //     timeMinute = 0;
-  //     timeSecond = 30;
-  //     taskCount = 0;
-  //   }
-  // }
+
+class Setting {
+  int numOneFrom;
+  int numOneTo;
+  int numTwoFrom;
+  int numTwoTo;
+  int timeMinute;
+  int timeSecond;
+  int taskCount;
+  Mode mode;
+
+  Setting({
+    this.numOneFrom = 1,
+  this.numOneTo = 9,
+  this.numTwoFrom = 1,
+  this.numTwoTo = 9,
+  this.timeMinute = 0,
+  this.timeSecond = 30,
+  this.taskCount = 12,
+  this.mode = Mode.taskCount,
+  });
 
   void setNumOneFromTo({required int valueFrom, required int valueTo}) {
     if (valueFrom > valueTo) {
@@ -114,6 +127,6 @@ class Setting {
         'Второе число: От $numTwoFrom до $numTwoTo,\n'
         'Время: $timeMinute мин. $timeSecond сек.,\n'
         'Количество примеров: $taskCount,\n'
-        'Режим тренировки: ${mode == Mode.timed ? 'По времени' : 'По количеству примеров'}';
+        'Режим тренировки: ${mode.displayName}';
   }
 }

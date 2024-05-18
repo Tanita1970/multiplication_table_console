@@ -1,6 +1,6 @@
 // import 'dart:io';
 // import 'dart:math';
-import 'package:multiplication_table_console/data/list_of_registered_users.dart';
+import 'package:multiplication_table_console/data/registered_users.dart';
 import 'package:multiplication_table_console/models/setting.dart';
 // import 'package:multiplication_table_console/models/task.dart';
 import 'package:multiplication_table_console/models/user.dart';
@@ -8,16 +8,17 @@ import 'package:multiplication_table_console/models/user.dart';
 import 'package:multiplication_table_console/services/tasks_generator.dart';
 
 void main() {
-  print('Добро пожаловать в Таблицу умножения!');
-  User newUser1 = User(name: 'Новый пользователь');
-  newUser1.registerUser();
-  // print('\nСоздан пользователь ${newUser1.toString()}\n');
+  // print('Добро пожаловать в Таблицу умножения!');
+  // User newUser1 = User(name: 'Новый пользователь');
+  // newUser1.register();
+  // // print('\nСоздан пользователь ${newUser1.toString()}\n');
 
-  User newUser2 = User(name: 'Новый пользователь');
-  newUser2.registerUser();
-  // print('\nСоздан пользователь ${newUser2.toString()}\n');
+  // User newUser2 = User(name: 'Новый пользователь');
+  // newUser2.register();
+  // // print('\nСоздан пользователь ${newUser2.toString()}\n');
 
   print('\n СПИСОК ВСЕХ ЗАРЕГИСТРИРОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ: \n');
+  // print(registeredUsers[0].email);
   print(registeredUsers.toString());
 
   // var userTanya = User(name: 'Таня');

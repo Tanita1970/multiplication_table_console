@@ -35,53 +35,7 @@ class TasksGenerator {
     }
     // print(' Список tasks: ${tasks.toString()}');
     return tasks;
-  }
-
-  /// Получает произвольную задачу
-  /// из списка не решенных задач
-  Task getRandomTask() {
-    print('***************************************');
-
-    if (unsolvedTasks.isEmpty) {
-      unsolvedTasks.addAll(tasks);
-    }
-
-    Random random = Random();
-    int index = random.nextInt(unsolvedTasks.length);
-    Task task = unsolvedTasks[index];
-    return task;
-  }
-
-  void training(int count) {
-    print('khkjhkjhkjhkjhkjhkjhkjkjkjh $tasks');
-    List<int> numbers = [];
-    int maxNumbers = 20;
-
-    stdout.write('Введите до 20 чисел (нажмите Enter после каждого числа): ');
-
-    Timer(Duration(seconds: 30), () {
-      print('\n\nИстекло время для ввода чисел.');
-      exit(0);
-    });
-
-    stdin.transform(utf8.decoder).listen((String data) {
-      print('*****************************object');
-      Task task = getRandomTask();
-      print('${task.numOne} * ${task.numTwo} = ?');
-      int answer = int.parse(data.trim());
-      UserTask userTask = UserTask(user, task);
-      userTask.setAnswer(answer);
-      userTask.checkAnswer();
-      userTasks.add(userTask);
-      if (userTask.isCorrect) {
-        correctAnswersCount++; // Проверить, вроде не нужно!
-        solvedTasks.add(task);
-        unsolvedTasks.remove(task);
-      } else {
-        wrongAnswersCount++; // Проверить, вроде не нужно!
-      }
-    });
-  }
+  }  
 
   void startTaskByTime(List<Task> tasks) {
     // training(tasks.length);
@@ -194,11 +148,17 @@ class TasksGenerator {
   }
 
   void startTask() {
-    tasks = generateTasks();
+    if (user.login(user.email, user.password)) {
+          tasks = generateTasks();
     if (user.setting.mode == Mode.timed) {
       startTaskByTime(tasks);
     } else {
       startTaskByCount(tasks);
     }
+    } else {
+      print('Вы не зарегистрированы!'); 
+      user.register();
+    }
+
   }
 }
