@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/data/registered_users.dart';
+import 'package:multiplication_table_console/services/file_operations.dart';
 
 class User {
   String name;
@@ -17,8 +18,78 @@ class User {
     this.email = 'Нет',
     this.password = 'Нет',
   });
+// Устанавливаем email пользователю
+  void setEmail(String email) {
+    this.email = email;
+  }
 
-  void register() {
+  // Устанавливаем пароль пользователю
+  void setPassword(String password) {
+    this.password = password;
+  }
+
+  void register() async {
+    inputUserData();
+
+    // Добавление нового пользователя в список registeredUsers
+    User newUser = User(
+        name: name,
+        isPremium: isPremium,
+        setting: setting,
+        email: email,
+        password: password);
+    registeredUsers.add(newUser);
+
+    // Сохранение списка пользователей в файл
+    // await saveUsersToFile(registeredUsers, 'registered_users.json');
+
+    // // Очищаем текущий список для теста загрузки
+    // registeredUsers.clear();
+
+    // // Загрузка списка пользователей из файла
+    // List<User> loadedUsers = await loadUsersFromFile('registered_users.json');
+    // print('Загруженные пользователи:');
+    // for (var user in loadedUsers) {
+    //   print(user);
+    // }
+
+    // Добавляем новых пользователей в файл
+    await addUsersToFile(registeredUsers, 'registered_users.json');
+
+    // Загружаем и печатаем всех пользователей из файла для проверки
+    // List<User> allUsers = await loadUsersFromFile('registered_users.json');
+    // print('Все пользователи после добавления новых:');
+    // for (var user in allUsers) {
+    //   print(user);
+    // }
+  }
+
+// // Проверка на существование пользователя в базе данных
+  // for (User user in registeredUsers) {
+  //   if (user.name == name && user.email == email) {
+  //     print('Вы уже зарегистрированы!');
+  //     return;
+  //   }
+  // }
+  Future<User> authorization(filePath) async {
+    registeredUsers = await loadUsersFromFile(filePath);
+    for (User user in registeredUsers) {
+      if (user.email == email && user.password == password) {
+        print('Вы успешно вошли в систему!');
+        return user;
+      }
+    }
+    print('Вы не авторизованы!');
+    return User(
+      name: '',
+      isPremium: false,
+      setting: Setting(),
+      email: '',
+      password: '',
+    );
+  }
+
+  void inputUserData() {
     print('Регистрация...');
 
     /// Ввод имени пользователя
@@ -75,24 +146,6 @@ class User {
       confirmPassword = stdin.readLineSync()!;
       attemptForPassword++;
     } while (password != confirmPassword && attemptForPassword <= 3);
-
-    /// Проверка на существование пользователя в базе данных
-    for (User user in registeredUsers) {
-      if (user.name == name && user.email == email) {
-        print('Вы уже зарегистрированы!');
-        return;
-      }
-    }
-
-    /// Создание нового пользователя в базе данных
-    User newUser = User(
-        name: name,
-        isPremium: isPremium,
-        setting: setting,
-        email: email,
-        password: password);
-    registeredUsers.add(newUser);
-    print('Вы успешно зарегистрировались!');
   }
 
   bool isValidName(String name) {
@@ -124,6 +177,26 @@ class User {
     }
     print('Неверный email или пароль!');
     return false;
+  }
+
+  // Конвертируем объект в JSON
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'isPremium': isPremium,
+        'setting': setting.toJson(),
+        'email': email,
+        'password': password,
+      };
+
+  // Конструктор из JSON
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['name'],
+      isPremium: json['isPremium'],
+      setting: Setting.fromJson(json['setting']),
+      email: json['email'],
+      password: json['password'],
+    );
   }
 
   @override

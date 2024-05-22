@@ -17,8 +17,18 @@ extension ModeExtension on Mode {
         return '';
     }
   }
-}
 
+  static Mode fromString(String mode) {
+    switch (mode) {
+      case 'По времени':
+        return Mode.timed;
+      case 'По количеству примеров':
+        return Mode.taskCount;
+      default:
+        throw Exception('Invalid mode string');
+    }
+  }
+}
 
 class Setting {
   int numOneFrom;
@@ -32,13 +42,13 @@ class Setting {
 
   Setting({
     this.numOneFrom = 1,
-  this.numOneTo = 9,
-  this.numTwoFrom = 1,
-  this.numTwoTo = 9,
-  this.timeMinute = 0,
-  this.timeSecond = 30,
-  this.taskCount = 12,
-  this.mode = Mode.taskCount,
+    this.numOneTo = 9,
+    this.numTwoFrom = 1,
+    this.numTwoTo = 9,
+    this.timeMinute = 0,
+    this.timeSecond = 30,
+    this.taskCount = 12,
+    this.mode = Mode.taskCount,
   });
 
   void setNumOneFromTo({required int valueFrom, required int valueTo}) {
@@ -121,12 +131,38 @@ class Setting {
     b = temp;
   }
 
+  // Конвертируем объект в JSON
+  Map<String, dynamic> toJson() => {
+        'numOneFrom': numOneFrom,
+        'numOneTo': numOneTo,
+        'numTwoFrom': numTwoFrom,
+        'numTwoTo': numTwoTo,
+        'timeMinute': timeMinute,
+        'timeSecond': timeSecond,
+        'taskCount': taskCount,
+        'mode': mode.displayName,
+      };
+
+  // Конструктор из JSON
+  factory Setting.fromJson(Map<String, dynamic> json) {
+    return Setting(
+      numOneFrom: json['numOneFrom'],
+      numOneTo: json['numOneTo'],
+      numTwoFrom: json['numTwoFrom'],
+      numTwoTo: json['numTwoTo'],
+      timeMinute: json['timeMinute'],
+      timeSecond: json['timeSecond'],
+      taskCount: json['taskCount'],
+      mode: ModeExtension.fromString(json['mode']),
+    );
+  }
+
   @override
   String toString() {
     return 'Первое число: от $numOneFrom до $numOneTo,\n'
         'Второе число: От $numTwoFrom до $numTwoTo,\n'
         'Время: $timeMinute мин. $timeSecond сек.,\n'
         'Количество примеров: $taskCount,\n'
-        'Режим тренировки: ${mode.displayName}';
+        'Режим тренировки: $mode';
   }
 }
