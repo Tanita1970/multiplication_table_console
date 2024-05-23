@@ -7,9 +7,10 @@ import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/task.dart';
 import 'package:multiplication_table_console/models/user.dart';
 import 'package:multiplication_table_console/models/user_task.dart';
+import 'package:multiplication_table_console/services/user_manager.dart';
 
-class TasksGenerator {
-  TasksGenerator(this.user);
+class TasksManager {
+  TasksManager(this.user);
 
   final User user;
 
@@ -17,9 +18,7 @@ class TasksGenerator {
   List<UserTask> userTasks = [];
 
   int correctAnswersCount = 0;
-  // Надо убрать, так как оказалось, что нигде не используется
   int wrongAnswersCount = 0;
-  // Надо убрать, так как оказалось, что нигде не используется
 
   List<Task> solvedTasks = [];
   List<Task> unsolvedTasks = [];
@@ -35,8 +34,9 @@ class TasksGenerator {
     }
     // print(' Список tasks: ${tasks.toString()}');
     return tasks;
-  }  
+  }
 
+  /// startTaskByTime(List<Task> tasks) - Тренировка по времени
   void startTaskByTime(List<Task> tasks) {
     // training(tasks.length);
     int timeTraining = user.setting.timeMinute * 60 + user.setting.timeSecond;
@@ -51,9 +51,9 @@ class TasksGenerator {
       exit(0);
     });
 
-    print('Список всех примеров: $tasks');
+    // print('Список всех примеров: $tasks');
     tasks.shuffle();
-    print('Перемешанные $tasks');
+    // print('Перемешанные $tasks');
 
     if (unsolvedTasks.isEmpty) unsolvedTasks.addAll(tasks);
 
@@ -94,11 +94,12 @@ class TasksGenerator {
     });
   }
 
+  /// startTaskByCount(List<Task> tasks) - тренировка по количеству заданий
   void startTaskByCount(List<Task> tasks) {
     // training(user.setting.taskCount);
-    print('Список всех примеров: $tasks');
+    // print('Список всех примеров: $tasks');
     tasks.shuffle();
-    print('Перемешанные $tasks');
+    // print('Перемешанные $tasks');
 
     if (unsolvedTasks.isEmpty) unsolvedTasks.addAll(tasks);
 
@@ -109,8 +110,6 @@ class TasksGenerator {
     int userSettingTaskCount = user.setting.taskCount;
     for (var index = 0; index < userSettingTaskCount; index++) {
       print('\n*** Пример №$counterTasks:');
-
-      // int index = 0;
       print('${tasks[index].numOne} * ${tasks[index].numTwo} = ?');
 
       int answer = int.parse(stdin.readLineSync() ?? '');
@@ -148,17 +147,11 @@ class TasksGenerator {
   }
 
   void startTask() {
-    if (user.login(user.email, user.password)) {
-          tasks = generateTasks();
+    tasks = generateTasks();
     if (user.setting.mode == Mode.timed) {
       startTaskByTime(tasks);
     } else {
       startTaskByCount(tasks);
     }
-    } else {
-      print('Вы не зарегистрированы!'); 
-      user.register();
-    }
-
   }
 }

@@ -41,15 +41,25 @@ class Setting {
   Mode mode;
 
   Setting({
-    this.numOneFrom = 1,
-    this.numOneTo = 9,
-    this.numTwoFrom = 1,
-    this.numTwoTo = 9,
-    this.timeMinute = 0,
-    this.timeSecond = 30,
-    this.taskCount = 12,
-    this.mode = Mode.taskCount,
+    required this.numOneFrom,
+    required this.numOneTo,
+    required this.numTwoFrom,
+    required this.numTwoTo,
+    required this.timeMinute,
+    required this.timeSecond,
+    required this.taskCount,
+    required this.mode,
   });
+
+  Setting.defaultValue()
+      : numOneFrom = 1,
+        numOneTo = 9,
+        numTwoFrom = 1,
+        numTwoTo = 9,
+        timeMinute = 0,
+        timeSecond = 30,
+        taskCount = 12,
+        mode = Mode.taskCount;
 
   void setNumOneFromTo({required int valueFrom, required int valueTo}) {
     if (valueFrom > valueTo) {

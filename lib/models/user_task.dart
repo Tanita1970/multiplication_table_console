@@ -7,8 +7,6 @@ class UserTask {
 
   int userAnswer = 0;
   bool isCorrect = false;
-  // int countCorrectAnswer = 0;
-  // int countWrongAnswer = 0;
 
   UserTask(this.user, this.task);
 
@@ -19,18 +17,15 @@ class UserTask {
   void checkAnswer() {
     if (userAnswer == task.result) {
       isCorrect = true;
-      // countCorrectAnswer++;
     } else {
       isCorrect = false;
-      // countWrongAnswer++;
     }
   }
 
   void reset() {
     userAnswer = 0;
     isCorrect = false;
-    // countCorrectAnswer = 0;
-    // countWrongAnswer = 0;
+    // countCongAnswer = 0;
   }
 
   @override
