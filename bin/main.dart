@@ -1,47 +1,48 @@
 import 'dart:io';
-import 'package:multiplication_table_console/data/registered_users.dart';
+
 import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/user.dart';
-import 'package:multiplication_table_console/services/file_manager.dart';
 import 'package:multiplication_table_console/services/tasks_manager.dart';
 import 'package:multiplication_table_console/services/user_manager.dart';
 
+// Удалить эти глобальные переменные
 String name = '';
 String email = '';
 String password = '';
-String filePath = 'registered_users.json';
+
+// Добавить глбальные переменные, отвечающие за инициализацию UserManager, FileManager.
+// Во всём коде использовать эти переменные вместо создания объекта на каждый вызов метода
 
 void main() async {
   print('\n Добро пожаловать в Таблицу умножения!\n');
-  String? number = menu() ?? '3';
+  String number = menu() ?? '3';
   switch (number) {
     case '1':
       print('\n ВВЕДИТЕ name: ');
       var name = stdin.readLineSync()!;
-
       print('\n ВВЕДИТЕ email: ');
       var email = stdin.readLineSync()!;
-
       print('\n ВВЕДИТЕ ПАРОЛЬ: ');
       var password = stdin.readLineSync()!;
 
-      Future<User> userLogin =
-          UserManager().login(name, email, password, filePath);
-      User user = await userLogin;
-      if (user.name != "") {
+      try {
+        User user = UserManager().login(name, email, password);
         print('\n Пользователь ${user.name} авторизован\n');
         TasksManager(user).startTask();
-      } else {
-        print('\n Пользователь ${user.name} не авторизован\n');
+      } catch (e) {
+        print('\n Пользователь $name не авторизован\n');
       }
 
     case '2':
-      User newUser2 = User.defaultValue();
+      // Поправить на record (метод inputUserData должен взвращать 3 строки, имя, мыло, пароль)
       inputUserData();
-      newUser2.setName(name);
-      newUser2.setEmail(email);
-      newUser2.setPassword(password);
-      UserManager().register(newUser2, filePath);
+      User newUser2 = User(
+          name: name,
+          email: email,
+          password: password,
+          setting: Setting.defaultValue(),
+          isPremium: false);
+      UserManager().register(newUser2);
       print('\n Создан пользователь ${newUser2.toString()}\n');
 
     case '3':

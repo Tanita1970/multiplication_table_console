@@ -1,13 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-import 'dart:async';
 
 import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/task.dart';
 import 'package:multiplication_table_console/models/user.dart';
 import 'package:multiplication_table_console/models/user_task.dart';
-import 'package:multiplication_table_console/services/user_manager.dart';
 
 class TasksManager {
   TasksManager(this.user);
@@ -68,9 +66,8 @@ class TasksManager {
       int answer = int.parse(data.trim());
       UserTask userTask = UserTask(user, tasks[index]);
       userTask.setAnswer(answer);
-      userTask.checkAnswer();
       userTasks.add(userTask);
-      if (userTask.isCorrect) {
+      if (userTask.isCorrectAnswer) {
         correctAnswersCount++;
         solvedTasks.add(tasks[index]);
         unsolvedTasks.remove(tasks[index]);
@@ -96,36 +93,36 @@ class TasksManager {
 
   /// startTaskByCount(List<Task> tasks) - тренировка по количеству заданий
   void startTaskByCount(List<Task> tasks) {
-    // training(user.setting.taskCount);
-    // print('Список всех примеров: $tasks');
     tasks.shuffle();
-    // print('Перемешанные $tasks');
 
     if (unsolvedTasks.isEmpty) unsolvedTasks.addAll(tasks);
 
     print('\n\nТренировка ПО КОЛИЧЕСТВУ началась!!!');
     print(
         '${user.name}, тебе надо решить ${user.setting.taskCount} примеров!\n');
+
+    // Перевести for на использование отдельного списка задач пользователя размером user.setting.taskCount
+    // Добавлять задачи в этот список
     int counterTasks = 1;
     int userSettingTaskCount = user.setting.taskCount;
     for (var index = 0; index < userSettingTaskCount; index++) {
+      var task = tasks[index];
       print('\n*** Пример №$counterTasks:');
-      print('${tasks[index].numOne} * ${tasks[index].numTwo} = ?');
+      print('${task.numOne} * ${task.numTwo} = ?');
 
       int answer = int.parse(stdin.readLineSync() ?? '');
-      UserTask userTask = UserTask(user, tasks[index]);
-      userTask.setAnswer(answer);
-      userTask.checkAnswer();
+      UserTask userTask = UserTask(user, task);
       userTasks.add(userTask);
-      if (userTask.isCorrect) {
+
+      userTask.setAnswer(answer);
+      if (userTask.isCorrectAnswer) {
         correctAnswersCount++;
-        solvedTasks.add(tasks[index]);
-        unsolvedTasks.remove(tasks[index]);
+        solvedTasks.add(task);
+        unsolvedTasks.remove(task);
       } else {
-        var savedTask = tasks[index];
         tasks.removeAt(index);
         int newIndex = (index + 2 < tasks.length) ? index + 2 : tasks.length;
-        tasks.insert(newIndex, savedTask);
+        tasks.insert(newIndex, task);
         index--;
         userSettingTaskCount--;
         wrongAnswersCount++;

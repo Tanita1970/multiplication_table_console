@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:multiplication_table_console/models/setting.dart';
-import 'package:multiplication_table_console/data/registered_users.dart';
-import 'package:multiplication_table_console/services/file_manager.dart';
 
 class User {
   String name;
@@ -18,13 +14,6 @@ class User {
     required this.email,
     required this.password,
   });
-
-  User.defaultValue()
-      : name = "",
-        isPremium = false,
-        setting = Setting.defaultValue(),
-        email = "",
-        password = "";
 
 // Устанавливаем имя пользователя
   void setName(String name) {
