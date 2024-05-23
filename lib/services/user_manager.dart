@@ -19,7 +19,7 @@ class UserManager {
   }
 
   /// Авторизация пользователя в приложении
-  Future<bool> login(
+  Future<User> login(
       String name, String email, String password, String filePath) async {
     try {
       registeredUsers = await FileManager().loadUsersFromFile(filePath);
@@ -28,7 +28,7 @@ class UserManager {
             user.email == email &&
             user.password == password) {
           print('Вы успешно вошли в систему!');
-          return true;
+          return user;
         }
       }
 
@@ -36,7 +36,7 @@ class UserManager {
       throw Exception('Ошибка входа');
     } on Exception catch (e) {
       print('Ошибка входа: ${e.toString()}');
-      return false;
+      return User.defaultValue();
     }
   }
 

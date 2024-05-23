@@ -24,19 +24,15 @@ void main() async {
 
       print('\n ВВЕДИТЕ ПАРОЛЬ: ');
       var password = stdin.readLineSync()!;
-      User newUser = User.defaultValue();
-      newUser.setName(name);
-      newUser.setEmail(email);
-      newUser.setPassword(password);
-      Future<bool> isFutureLogin =
+
+      Future<User> userLogin =
           UserManager().login(name, email, password, filePath);
-      bool isLogin = await isFutureLogin;
-      if (isLogin) {
-        print('\n Пользователь ${newUser.toString()} авторизован\n');
-        TasksManager(newUser).startTask();
+      User user = await userLogin;
+      if (user.name != "") {
+        print('\n Пользователь ${user.name} авторизован\n');
+        TasksManager(user).startTask();
       } else {
-        print('\n Пользователь ${newUser.toString()} не авторизован\n');
-        menu();
+        print('\n Пользователь ${user.name} не авторизован\n');
       }
 
     case '2':
