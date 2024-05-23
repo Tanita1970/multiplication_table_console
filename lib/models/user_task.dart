@@ -6,30 +6,17 @@ class UserTask {
   Task task;
 
   int userAnswer = 0;
-  bool isCorrect = false;
+  bool isCorrectAnswer = false;
 
   UserTask(this.user, this.task);
 
   void setAnswer(int answer) {
     userAnswer = answer;
-  }
-
-  void checkAnswer() {
-    if (userAnswer == task.result) {
-      isCorrect = true;
-    } else {
-      isCorrect = false;
-    }
-  }
-
-  void reset() {
-    userAnswer = 0;
-    isCorrect = false;
-    // countCongAnswer = 0;
+    isCorrectAnswer = answer == task.result;
   }
 
   @override
   String toString() {
-    return '\n$task. Ответ пользователя: $userAnswer ($isCorrect)';
+    return '\n$task. Ответ пользователя: $userAnswer ($isCorrectAnswer)';
   }
 }

@@ -10,34 +10,27 @@ import 'package:multiplication_table_console/services/file_manager.dart';
 ///    через поиск в списке пользователей, после чего возвращает пользователя из метода
 class UserManager {
   /// Регистрирация нового пользователя
-  void register(User newUser, String filePath) async {
+  void register(User newUser) {
     // Добавление нового пользователя в список registeredUsers
     registeredUsers.add(newUser);
 
     // Добавляем новых пользователей в файл
-    await FileManager().addUsersToFile(registeredUsers, filePath);
+    FileManager().addUsersToFile(registeredUsers);
   }
 
   /// Авторизация пользователя в приложении
-  Future<User> login(
-      String name, String email, String password, String filePath) async {
-    try {
-      registeredUsers = await FileManager().loadUsersFromFile(filePath);
-      for (User user in registeredUsers) {
-        if (user.name == name &&
-            user.email == email &&
-            user.password == password) {
-          print('Вы успешно вошли в систему!');
-          return user;
-        }
+  User login(String name, String email, String password) {
+    registeredUsers = FileManager().loadUsersFromFile();
+    for (User user in registeredUsers) {
+      if (user.name == name &&
+          user.email == email &&
+          user.password == password) {
+        print('Вы успешно вошли в систему!');
+        return user;
       }
-
-      // Если цикл завершается без возврата, генерируется исключение
-      throw Exception('Ошибка входа');
-    } on Exception catch (e) {
-      print('Ошибка входа: ${e.toString()}');
-      return User.defaultValue();
     }
+
+    throw Exception('Пользователь не найден');
   }
 
   /// Проверка правильности введенного имени name

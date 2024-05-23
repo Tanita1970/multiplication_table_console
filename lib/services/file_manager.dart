@@ -5,9 +5,11 @@ import 'package:multiplication_table_console/models/user.dart';
 /// Класс FileManager позволяет управлять процессом
 /// чтения и записи информации о пользователе в файл
 class FileManager {
+  String registredUsersFilePath = "registered_users.json";
+
   /// Функция для сохранения списка пользователей users в файл filePath
-  Future<void> saveUsersToFile(List<User> users, String filePath) async {
-    final file = File(filePath);
+  void _saveUsersToFile(List<User> users) {
+    final file = File(registredUsersFilePath);
 
     // Конвертируем список пользователей в JSON
     List<Map<String, dynamic>> jsonList =
@@ -17,25 +19,25 @@ class FileManager {
     String jsonString = jsonEncode(jsonList);
 
     // Записываем строку в файл
-    await file.writeAsString(jsonString);
-    print('Данные сохранены в файл $filePath');
+    file.writeAsStringSync(jsonString);
+    print('Данные сохранены в файл $registredUsersFilePath');
   }
 
   /// Функция для загрузки списка пользователей из файла filePath
-  Future<List<User>> loadUsersFromFile(String filePath) async {
-    final file = File(filePath);
+  List<User> loadUsersFromFile() {
+    final file = File(registredUsersFilePath);
 
     // Проверяем, существует ли файл
-    if (!await file.exists()) {
-      print('Файл $filePath не существует. Создаем новый файл.');
+    if (!file.existsSync()) {
+      print('Файл $registredUsersFilePath не существует. Создаем новый файл.');
 
       // Если файла по указанному пути не существует, то
       // создаем файл и записываем в него пустой список
-      await saveUsersToFile([], filePath);
+      _saveUsersToFile([]);
     }
 
     // Читаем содержимое файла как строку
-    String jsonString = await file.readAsString();
+    String jsonString = file.readAsStringSync();
 
     // Конвертируем JSON-строку в список
     List<dynamic> jsonList = jsonDecode(jsonString);
@@ -46,14 +48,14 @@ class FileManager {
   }
 
   /// Функция для добавления новых пользователей newUsers в файл filePath
-  Future<void> addUsersToFile(List<User> newUsers, String filePath) async {
+  void addUsersToFile(List<User> newUsers) {
     // Загружаем текущих пользователей из файла в users
-    List<User> users = await loadUsersFromFile(filePath);
+    List<User> users = loadUsersFromFile();
 
     // Добавляем новых пользователей в список users
     users.addAll(newUsers);
 
     // Сохраняем обновленный список обратно в файл
-    await saveUsersToFile(users, filePath);
+    _saveUsersToFile(users);
   }
 }
