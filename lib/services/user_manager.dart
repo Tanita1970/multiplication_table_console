@@ -1,26 +1,24 @@
-import 'package:multiplication_table_console/data/registered_users.dart';
+import 'package:multiplication_table_console/globals.dart';
 import 'package:multiplication_table_console/models/user.dart';
-import 'package:multiplication_table_console/services/file_manager.dart';
 
 /// UserManger:
 ///  - хранит зарегистрированных пользователей
-///  - регистрирует пользователя(получая на вход имя, пароль, емейл),
-///    прверяя корректность данных и добавляя в список пользователей
-///  - авторизовывает пользователя(получает на вход имя, пароль)
-///    через поиск в списке пользователей, после чего возвращает пользователя из метода
+///  - void register(User newUser) - регистрирует пользователя(получая на вход имя, пароль, емейл),
+///          проверяя корректность данных и добавляя в список пользователей
+///
+/// - User login(String name, String email, String password) -
+///          авторизовывает пользователя(получает на вход имя, пароль)
+///          через поиск в списке пользователей, после чего возвращает пользователя из метода
 class UserManager {
   /// Регистрирация нового пользователя
   void register(User newUser) {
-    // Добавление нового пользователя в список registeredUsers
-    registeredUsers.add(newUser);
-
     // Добавляем новых пользователей в файл
-    FileManager().addUsersToFile(registeredUsers);
+    fileManager.addUserToFile(newUser);
   }
 
   /// Авторизация пользователя в приложении
   User login(String name, String email, String password) {
-    registeredUsers = FileManager().loadUsersFromFile();
+    var registeredUsers = fileManager.loadUsersFromFile();
     for (User user in registeredUsers) {
       if (user.name == name &&
           user.email == email &&
