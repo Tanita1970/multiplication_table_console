@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:multiplication_table_console/globals.dart';
 import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/user.dart';
@@ -30,10 +31,11 @@ void main() {
     case '2':
       // Поправить на record (метод inputUserData должен взвращать 3 строки, имя, мыло, пароль)
       print('Регистрация...');
+      var userData = inputUserData();
       User newUser2 = User(
-          name: inputUserData.name,
-          email: inputUserData.email,
-          password: inputUserData.password,
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
           setting: Setting.defaultValue(),
           isPremium: false);
       userManager.register(newUser2);
@@ -47,11 +49,12 @@ void main() {
   }
 }
 
-({String name, String email, String password}) inputUserData = (
-  name: inputName(),
-  email: inputEmail(),
-  password: inputPassword(),
-);
+({String name, String email, String password}) inputUserData() {
+  String name = inputName();
+  String email = inputEmail();
+  String password = inputPassword();
+  return (name: name, email: email, password: password);
+}
 
 /// Ввод имени пользователя
 String inputName() {

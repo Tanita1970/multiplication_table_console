@@ -47,7 +47,7 @@ class FileManager {
   }
 
   /// Функция для добавления новых пользователей newUsers в файл filePath
-  void addUsersToFile(User newUsers) {
+  void addUserToFile(User newUsers) {
     // Загружаем текущих пользователей из файла в users
     List<User> users = loadUsersFromFile();
 

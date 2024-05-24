@@ -13,7 +13,7 @@ class UserManager {
   /// Регистрирация нового пользователя
   void register(User newUser) {
     // Добавляем новых пользователей в файл
-    fileManager.addUsersToFile(newUser);
+    fileManager.addUserToFile(newUser);
   }
 
   /// Авторизация пользователя в приложении

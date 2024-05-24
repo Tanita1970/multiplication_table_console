@@ -16,6 +16,22 @@
         "password": "tanya12345"
     },
     {
+        "name": "qwer",
+        "isPremium": false,
+        "setting": {
+            "numOneFrom": 1,
+            "numOneTo": 9,
+            "numTwoFrom": 1,
+            "numTwoTo": 9,
+            "timeMinute": 0,
+            "timeSecond": 30,
+            "taskCount": 12,
+            "mode": "По количеству примеров"
+        },
+        "email": "qwer@example.com",
+        "password": "qwer12345"
+    },
+    {
         "name": "Masha",
         "isPremium": false,
         "setting": {
@@ -60,7 +76,7 @@
             "taskCount": 12,
             "mode": "По времени"
         },
-        "email": "qqq@qq.ru",
+        "email": "qqq@example.com",
         "password": "qqq12345"
     }
 ]
