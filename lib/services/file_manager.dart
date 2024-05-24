@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:multiplication_table_console/globals.dart';
 import 'package:multiplication_table_console/models/user.dart';
 
 /// Класс FileManager позволяет управлять процессом
 /// чтения и записи информации о пользователе в файл
 class FileManager {
-  String registredUsersFilePath = "registered_users.json";
-
   /// Функция для сохранения списка пользователей users в файл filePath
   void _saveUsersToFile(List<User> users) {
     final file = File(registredUsersFilePath);
@@ -48,12 +47,12 @@ class FileManager {
   }
 
   /// Функция для добавления новых пользователей newUsers в файл filePath
-  void addUsersToFile(List<User> newUsers) {
+  void addUsersToFile(User newUsers) {
     // Загружаем текущих пользователей из файла в users
     List<User> users = loadUsersFromFile();
 
     // Добавляем новых пользователей в список users
-    users.addAll(newUsers);
+    users.add(newUsers);
 
     // Сохраняем обновленный список обратно в файл
     _saveUsersToFile(users);

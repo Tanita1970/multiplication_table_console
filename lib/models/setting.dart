@@ -1,6 +1,3 @@
-// import 'dart:math';
-// import 'package:multiplication_table_console/models/task.dart';
-
 enum Mode {
   timed,
   taskCount,

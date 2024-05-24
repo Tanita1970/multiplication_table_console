@@ -1,19 +1,13 @@
 import 'dart:io';
-
+import 'package:multiplication_table_console/globals.dart';
 import 'package:multiplication_table_console/models/setting.dart';
 import 'package:multiplication_table_console/models/user.dart';
 import 'package:multiplication_table_console/services/tasks_manager.dart';
-import 'package:multiplication_table_console/services/user_manager.dart';
-
-// Удалить эти глобальные переменные
-String name = '';
-String email = '';
-String password = '';
 
 // Добавить глбальные переменные, отвечающие за инициализацию UserManager, FileManager.
 // Во всём коде использовать эти переменные вместо создания объекта на каждый вызов метода
 
-void main() async {
+void main() {
   print('\n Добро пожаловать в Таблицу умножения!\n');
   String number = menu() ?? '3';
   switch (number) {
@@ -26,7 +20,7 @@ void main() async {
       var password = stdin.readLineSync()!;
 
       try {
-        User user = UserManager().login(name, email, password);
+        User user = userManager.login(name, email, password);
         print('\n Пользователь ${user.name} авторизован\n');
         TasksManager(user).startTask();
       } catch (e) {
@@ -35,14 +29,14 @@ void main() async {
 
     case '2':
       // Поправить на record (метод inputUserData должен взвращать 3 строки, имя, мыло, пароль)
-      inputUserData();
+      print('Регистрация...');
       User newUser2 = User(
-          name: name,
-          email: email,
-          password: password,
+          name: inputUserData.name,
+          email: inputUserData.email,
+          password: inputUserData.password,
           setting: Setting.defaultValue(),
           isPremium: false);
-      UserManager().register(newUser2);
+      userManager.register(newUser2);
       print('\n Создан пользователь ${newUser2.toString()}\n');
 
     case '3':
@@ -51,88 +45,53 @@ void main() async {
     default:
       exit(0);
   }
-  /*
-  // User newUser1 = User(name: 'Новый пользователь', setting: Setting());
-  // newUser1.register();
-
-  // Очищаем текущий список для теста загрузки
-  // registeredUsers.clear();
-  // print(registeredUsers);
-
-  // // Загружаем пользователей из файла
-  // registeredUsers = await loadUsersFromFile('registered_users.json');
-
-  // Печатаем загруженные данные
-  // for (var user in registeredUsers) {
-  //   print('kllkjlkjlkjl');
-  //   print(user);
-  // }
-  // print('\nСоздан пользователь ${newUser1.toString()}\n');
-
-  // User newUser2 = User(name: 'Новый пользователь');
-  // newUser2.register();
-  // // print('\nСоздан пользователь ${newUser2.toString()}\n');
-
-  // print('\n СПИСОК ВСЕХ ЗАРЕГИСТРИРОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ: \n');
-  // // print(registeredUsers[0].email);
-  // print(registeredUsers.toString());
-
-  // var userTanya = User(name: 'Таня');
-  // userTanya.setting.setNumOneFromTo(valueFrom: 2, valueTo: 5);
-  // userTanya.setting.setNumTwoFromTo(valueFrom: 4, valueTo: 6);
-  // userTanya.setting.setTimeMinute(minute: 0);
-  // userTanya.setting.setTimeSecond(second: 30);
-  // userTanya.setting.setTaskCount(count: 10);
-  // // userTanya.setting.setMode(value: Mode.timed);
-  // userTanya.setting.setMode(value: Mode.taskCount);
-  // print('Создан пользователь ${userTanya.toString()}');
-  // TasksGenerator(userTanya).startTask();
-  */
 }
 
-void inputUserData() {
-  print('Регистрация...');
-  inputName();
-  inputEmail();
-  inputPassword();
-}
+({String name, String email, String password}) inputUserData = (
+  name: inputName(),
+  email: inputEmail(),
+  password: inputPassword(),
+);
 
 /// Ввод имени пользователя
-void inputName() {
+String inputName() {
+  String name = '';
   int attemptForName = 1;
   print('\n ********** ВВЕДИТЕ ИМЯ **********');
   do {
     print('Попытка №$attemptForName');
     name = stdin.readLineSync()!;
     attemptForName++;
-    if (attemptForName > 3 && UserManager().isValidName(name) == false) {
+    if (attemptForName > 3 && userManager.isValidName(name) == false) {
       print('Вам отказано в регистрации!');
-      return;
+      return name;
     }
-  } while (!UserManager().isValidName(name) && attemptForName <= 3);
+  } while (!userManager.isValidName(name) && attemptForName <= 3);
+  return name;
 }
 
 /// Ввод почтового ящика
-void inputEmail() {
+String inputEmail() {
+  String email = '';
   int attemptForEmail = 1;
-
   print('\n ********** ВВЕДИТЕ email: **********');
-
   do {
     print(' Попытка №$attemptForEmail');
     attemptForEmail++;
 
     email = stdin.readLineSync()!;
 
-    if (attemptForEmail > 3 && UserManager().isValidEmail(email) == false) {
+    if (attemptForEmail > 3 && userManager.isValidEmail(email) == false) {
       print('Вам отказано в регистрации!');
-      return;
+      return email;
     }
-  } while (!UserManager().isValidEmail(email) && attemptForEmail <= 3);
+  } while (!userManager.isValidEmail(email) && attemptForEmail <= 3);
+  return email;
 }
 
 /// Ввод пароля
-void inputPassword() {
+String inputPassword() {
+  String password = '';
   int attemptForPassword = 1;
   do {
     print('\n ********** ВВЕДИТЕ ПАРОЛЬ **********\n'
@@ -143,11 +102,10 @@ void inputPassword() {
     password = stdin.readLineSync()!;
 
     if (attemptForPassword > 3 &&
-        UserManager().isValidPassword(password) == false) {
+        userManager.isValidPassword(password) == false) {
       print('Вам отказано в регистрации!');
-      return;
     }
-  } while (!UserManager().isValidPassword(password) && attemptForPassword <= 3);
+  } while (!userManager.isValidPassword(password) && attemptForPassword <= 3);
 
   attemptForPassword = 1;
   print('\n ********** ВВЕДИТЕ ПАРОЛЬ ЕЩЁ РАЗ **********\n');
@@ -156,7 +114,9 @@ void inputPassword() {
     print('Попытка №$attemptForPassword');
     confirmPassword = stdin.readLineSync()!;
     attemptForPassword++;
+    if (password == confirmPassword) return password;
   } while (password != confirmPassword && attemptForPassword <= 3);
+  return password;
 }
 
 String? menu() {
